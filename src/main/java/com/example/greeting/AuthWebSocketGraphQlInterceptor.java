@@ -2,6 +2,8 @@ package com.example.greeting;
 
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Mono;
 
 import org.springframework.graphql.server.WebGraphQlRequest;
@@ -12,13 +14,17 @@ import org.springframework.graphql.server.WebSocketSessionInfo;
 
 public class AuthWebSocketGraphQlInterceptor implements WebSocketGraphQlInterceptor {
 
-	private static final String TOKEN_NAME = "token";
+	private static final Log logger = LogFactory.getLog(AuthWebSocketGraphQlInterceptor.class);
+
+	public static final String TOKEN_NAME = "token";
+
 
 	@Override
 	public Mono<Object> handleConnectionInitialization(
 			WebSocketSessionInfo sessionInfo, Map<String, Object> connectionInitPayload) {
 
 		Object token = connectionInitPayload.get(TOKEN_NAME);
+		logger.debug("Token in connection_init payload '" + token + "'");
 		sessionInfo.getAttributes().put("token", token);
 		return Mono.empty();
 	}
@@ -30,6 +36,7 @@ public class AuthWebSocketGraphQlInterceptor implements WebSocketGraphQlIntercep
 				WebSocketSessionInfo info = wsRequest.getSessionInfo();
 				Object token = info.getAttributes().get(TOKEN_NAME);
 				if (token != null) {
+					logger.debug("Writing token '" + token + "'");
 					return context.put(TOKEN_NAME, token);
 				}
 			}

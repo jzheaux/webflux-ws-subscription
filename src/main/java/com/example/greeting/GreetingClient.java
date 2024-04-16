@@ -3,8 +3,11 @@ package com.example.greeting;
 import java.net.URI;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import reactor.core.publisher.Mono;
 
+import org.springframework.graphql.client.GraphQlClientInterceptor;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClientInterceptor;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
@@ -13,7 +16,7 @@ public class GreetingClient {
 
 	public static void main(String[] args) {
 
-		WebSocketGraphQlClientInterceptor interceptor = new WebSocketGraphQlClientInterceptor() {
+		GraphQlClientInterceptor interceptor = new WebSocketGraphQlClientInterceptor() {
 					@Override
 					public Mono<Object> connectionInitPayload() {
 						return Mono.just(Map.of("token", "abc"));
