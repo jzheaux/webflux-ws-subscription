@@ -18,7 +18,8 @@ public class AuthWebSocketGraphQlInterceptor implements WebSocketGraphQlIntercep
 	public Mono<Object> handleConnectionInitialization(
 			WebSocketSessionInfo sessionInfo, Map<String, Object> connectionInitPayload) {
 
-		sessionInfo.getAttributes().put("token", "abc");
+		Object token = connectionInitPayload.get(TOKEN_NAME);
+		sessionInfo.getAttributes().put("token", token);
 		return Mono.empty();
 	}
 
