@@ -8,6 +8,7 @@ import reactor.core.publisher.Flux;
 
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SubscriptionMapping;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -17,18 +18,14 @@ public class GreetingController {
 
 
 	@QueryMapping
-	String greeting() {
-		return "Hello World!";
+	String greeting(Authentication authentication) {
+		return "Hello " + authentication.getName();
 	}
 
 	@SubscriptionMapping
-	Flux<String> greetings() {
+	Flux<String> greetings(Authentication authentication) {
 		return Flux.interval(Duration.ofMillis(50))
-				.contextWrite(context -> {
-					logger.debug("Token '" + context.get(AuthWebSocketGraphQlInterceptor.TOKEN_NAME) + "'");
-					return context;
-				})
-				.map(aLong -> "Hello " + aLong + "!");
+			.map((num) -> "Hello " + authentication.getName() + num + "!");
 	}
 
 }
